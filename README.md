@@ -1,4 +1,4 @@
-# HyperSmart - Hyperliquid到Bybit跟单系统
+# HyperSmart - Hyperliquid到Bybit等交易所跟单系统
 
 <div align="center">
 
@@ -6,9 +6,9 @@
 ![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-**专业的 Hyperliquid 到 Bybit 跟单系统**
+**专业的 Hyperliquid 到 Bybit 等交易所跟单系统**
 
-订阅 Hyperliquid 聪明钱地址交易信号，实时自动复制交易到 Bybit、Bitget、OKX、Binance
+订阅 Hyperliquid 聪明钱地址交易信号，实时自动复制交易到 Bybit、Bitget、OKX、Binance、gate
 
 [快速开始](#快速安装) | [功能特性](#功能特性) | [系统要求](#系统要求) | [文档](#使用文档)
 
@@ -24,32 +24,19 @@
 curl -L https://raw.githubusercontent.com/daimin001/HyperSmart/main/install.sh | sudo bash
 ```
 
-或手动安装：
-
-```bash
-# 1. 下载安装脚本
-curl -O https://raw.githubusercontent.com/daimin001/HyperSmart/main/install.sh
-
-# 2. 添加执行权限
-chmod +x install.sh
-
-# 3. 执行安装
-sudo ./install.sh
-```
-
 ## ✨ 功能特性
 
 - ✅ **实时跟单** - Hyperliquid 到 Bybit 实时同步交易
-- ✅ **多账户管理** - 支持最多 5 个账户同时运行
+- ✅ **多账户管理** - 支持最多 6 个账户同时运行
 - ✅ **Web 管理界面** - 现代化的 Web UI，轻松管理
 - ✅ **持仓复制** - 一键复制 Hyperliquid 持仓到 Bybit
 - ✅ **白名单控制** - 支持交易对白名单过滤
-- ✅ **账户限制** - 智能账户数量限制（最多5个）
+- ✅ **账户限制** - 智能账户数量限制（最多6个）
 - ✅ **安全认证** - 完整的认证系统（bcrypt + TOTP）
 - ✅ **数据持久化** - SQLite 数据库，数据安全可靠
 - ✅ **Docker 部署** - 一键部署，开箱即用
 - ✅ **自动更新** - 内置版本检查和自动更新机制
-- ✅ **多交易所支持** - Bybit、Bitget、OKX、Binance
+- ✅ **后续多交易所支持** - Bybit、Bitget、OKX、Binance
 
 ## 📋 系统要求
 
@@ -60,12 +47,6 @@ sudo ./install.sh
 - **磁盘**: 10GB 可用空间
 - **Docker**: 20.10+ (安装脚本会自动安装)
 
-### 推荐配置
-- **CPU**: 2核+
-- **内存**: 4GB+ RAM
-- **磁盘**: 20GB+ SSD
-- **网络**: 稳定的网络连接
-
 ## 📦 安装后
 
 安装完成后，系统会自动启动并运行在：
@@ -74,11 +55,6 @@ sudo ./install.sh
 http://你的服务器IP:8080
 ```
 
-### 默认配置
-- **Web端口**: 8080
-- **数据目录**: `/opt/trading-system/`
-- **日志目录**: `/opt/trading-system/logs/`
-- **数据库**: `/opt/trading-system/sqlite/`
 
 ## 🎯 使用文档
 
@@ -100,142 +76,6 @@ http://你的服务器IP:8080
    - 选择模式（实盘/模拟盘）
 4. 保存并启动
 
-### 查看运行状态
-
-```bash
-# 查看容器状态
-docker ps | grep trading-system
-
-# 查看日志
-docker logs -f trading-system-app
-
-# 查看系统资源
-docker stats trading-system-app
-```
-
-## 🔧 高级配置
-
-### 环境变量
-
-在启动时可以通过环境变量自定义配置：
-
-```bash
-docker run -d \
-  -e TZ=Asia/Shanghai \
-  -e BYBIT_UID=你的BybitUID \
-  -p 8080:8000 \
-  ...
-```
-
-### 数据备份
-
-```bash
-# 备份数据库
-sudo tar -czf backup-$(date +%Y%m%d).tar.gz /opt/trading-system/sqlite/
-
-# 备份配置
-sudo tar -czf config-backup-$(date +%Y%m%d).tar.gz /opt/trading-system/data/
-```
-
-### 更新系统
-
-```bash
-# 下载更新脚本
-curl -O http://43.156.4.146:3000/scripts/update.sh
-
-# 执行更新
-sudo bash update.sh
-```
-
-## 🐛 故障排查
-
-### 容器无法启动
-
-```bash
-# 查看容器日志
-docker logs trading-system-app
-
-# 查看容器详细信息
-docker inspect trading-system-app
-```
-
-### 端口被占用
-
-```bash
-# 检查端口占用
-sudo netstat -nltp | grep 8080
-
-# 停止占用端口的进程或更换端口
-```
-
-### 数据库错误
-
-```bash
-# 检查数据库文件权限
-ls -la /opt/trading-system/sqlite/
-
-# 修复权限
-sudo chmod 777 /opt/trading-system/sqlite/
-```
-
-## 📊 架构说明
-
-```
-┌─────────────────────────────────────────┐
-│         HyperSmart 系统架构              │
-├─────────────────────────────────────────┤
-│                                          │
-│  Hyperliquid  →  Monitor  →  Queue      │
-│                     ↓                    │
-│                 Sync Service             │
-│                     ↓                    │
-│          Bybit / Bitget / OKX / Binance │
-│                                          │
-│  Web UI  ←→  FastAPI  ←→  SQLite        │
-│                                          │
-└─────────────────────────────────────────┘
-```
-
-## 🔐 安全建议
-
-1. **使用强密码** - 设置复杂的管理员密码
-2. **启用 TOTP** - 双因素认证增强安全性
-3. **定期备份** - 定期备份数据库和配置文件
-4. **防火墙配置** - 仅开放必要的端口
-5. **API 密钥安全** - 妥善保管交易所 API 密钥
-
-## 📝 更新日志
-
-### v2.0.0 (2026-01-04)
-- ✨ 完整的账户数量限制（最多5个同时运行）
-- ✨ 优化的Docker镜像（包含完整SQLite支持）
-- ✨ 增强的认证系统（bcrypt + TOTP）
-- ✨ 数据持久化支持
-- ✨ 完善的测试脚本
-- 🔧 修复了依赖问题
-- 🔧 优化了数据库目录权限
-- 🔧 增强了镜像稳定性
-
-### v1.1.0
-- 优化性能
-- 修复若干bug
-- 新增监控功能
-
-### v1.0.0
-- 初始版本发布
-- 支持Docker一键部署
-- 集成Hyperliquid-Bybit跟单系统
-
-## 🤝 支持与反馈
-
-如有问题或建议，请通过以下方式联系：
-
-- **Issues**: [GitHub Issues](https://github.com/daimin001/HyperSmart/issues)
-- **版本服务器**: http://43.156.4.146:3000
-
-## 📄 许可证
-
-MIT License
 
 ---
 
